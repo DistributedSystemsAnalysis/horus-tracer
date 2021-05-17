@@ -1,7 +1,7 @@
 import os
 import logging
-from file_writer import JsonWriter, BinaryWriter
-from kafka_writer import KafkaWriter
+from .file_writer import JsonWriter, BinaryWriter
+from .kafka_writer import KafkaWriter
 
 class WriterFactory:
     @staticmethod

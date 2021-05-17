@@ -2,7 +2,6 @@ import multiprocessing
 import argparse
 import logging
 import logging.config
-import events
 import signal
 import time
 import sys
@@ -10,6 +9,7 @@ import errno
 import os
 from falcon import util
 from falcon.core import settings
+from falcon.core import events
 from falcon.core.events.handling.writers.writer_factory import WriterFactory
 import pkg_resources
 from falcon import util
@@ -26,7 +26,7 @@ class Tracer:
             self.on_ready_callback = lambda : os.kill(pid, signal.SIGCONT)
 
     def run(self):
-        from bpf import BpfProgram
+        from .bpf import BpfProgram
 
         program_filepath = pkg_resources.resource_filename('falcon', 'core/resources/ebpf/probes.c')
 
@@ -138,7 +138,7 @@ def main():
 
                 if program_exited and tracer_exited:
                     exit = True
-            except OSError, e:
+            except (OSError, e):
                 if e.errno != errno.EINTR:
                     raise
     else:

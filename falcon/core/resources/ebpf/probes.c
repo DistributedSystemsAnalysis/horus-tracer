@@ -1,3 +1,9 @@
+
+#ifdef asm_inline
+#undef asm_inline
+#define asm_inline asm
+#endif
+
 #include <uapi/linux/ptrace.h>
 #include <net/sock.h>
 #include <linux/if.h>

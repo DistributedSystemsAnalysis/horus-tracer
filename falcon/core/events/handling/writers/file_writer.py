@@ -23,4 +23,4 @@ class JsonWriter(BinaryWriter):
 
     def write(self, event):
         assert self._file is not None
-        self._file.write(event.to_json() + os.linesep)
+        self._file.write((event.to_json() + os.linesep).encode('utf-8'))

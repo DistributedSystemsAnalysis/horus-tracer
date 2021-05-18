@@ -29,7 +29,7 @@ class KafkaWriter:
             logging.debug('Delivering event type [{}] to {} [partition:{}]'.format(
                 event._type, topic['name'], topic['partition']))
 
-        self._producer.produce(topic['name'], buffer(event.to_bytes()), partition=topic['partition'], callback=KafkaWriter.delivery_report)
+        self._producer.produce(topic['name'], bytes(event.to_bytes()), partition=topic['partition'], callback=KafkaWriter.delivery_report)
 
     def close(self):
         self._producer.flush()
@@ -41,7 +41,7 @@ class KafkaWriter:
 
         return {
             'name': topic,
-            'partition': int(hashlib.sha512(key).hexdigest(), 16) % self._partitions_count[topic]
+            'partition': int(hashlib.sha512(key.encode('utf-8')).hexdigest(), 16) % self._partitions_count[topic]
         }
 
     def _boot_topics(self):

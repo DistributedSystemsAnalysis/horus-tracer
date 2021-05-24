@@ -143,7 +143,7 @@ int static skip_comm_struct(struct pid_info_t process_info)
 
 int static skip_pid(u32 pid)
 {
-    if (PID_FILTER == 0 || trace_pids.lookup(&pid) != NULL || pid == PID_FILTER)
+    if (PID_FILTER == 0 || pid == PID_FILTER)
     {
         return 0;
     }
@@ -151,21 +151,25 @@ int static skip_pid(u32 pid)
     return 1;
 }
 
-int static skip_pid_struct(struct pid_info_t process_info)
-{
-    return skip_pid(process_info.kpid);
-}
-
 int static skip(struct pid_info_t process_info)
 {
+    u32 pid;
+
+    pid = process_info.kpid;
+
+    if (trace_pids.lookup(&pid) != NULL)
+    {
+        return 0;
+    }
+
     if (PID_FILTER != NULL && COMM_FILTER != NULL)
     {
-        return skip_pid_struct(process_info) && skip_comm_struct(process_info);
+        return skip_pid(pid) && skip_comm_struct(process_info);
     }
 
     if (PID_FILTER != NULL)
     {
-        return skip_pid_struct(process_info);
+        return skip_pid(pid);
     }
 
     if (COMM_FILTER != NULL)
